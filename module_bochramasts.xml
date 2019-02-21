@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_bochramasts" default="compile.module.bochramasts">
+  <dirname property="module.bochramasts.basedir" file="${ant.file.module_bochramasts}"/>
+  
+  <property name="module.jdk.home.bochramasts" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.bochramasts" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.bochramasts" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.bochramasts" value="-encoding UTF-8 -source 8 -target 8 ${compiler.args}"/>
+  
+  <property name="bochramasts.output.dir" value="${module.bochramasts.basedir}/out/production/BochramaSTS"/>
+  <property name="bochramasts.testoutput.dir" value="${module.bochramasts.basedir}/out/test/BochramaSTS"/>
+  
+  <path id="bochramasts.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="bochramasts.module.production.classpath">
+    <path refid="${module.jdk.classpath.bochramasts}"/>
+  </path>
+  
+  <path id="bochramasts.runtime.production.module.classpath">
+    <pathelement location="${bochramasts.output.dir}"/>
+  </path>
+  
+  <path id="bochramasts.module.classpath">
+    <path refid="${module.jdk.classpath.bochramasts}"/>
+    <pathelement location="${bochramasts.output.dir}"/>
+  </path>
+  
+  <path id="bochramasts.runtime.module.classpath">
+    <pathelement location="${bochramasts.testoutput.dir}"/>
+    <pathelement location="${bochramasts.output.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.bochramasts">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.bochramasts">
+    <patternset refid="excluded.from.module.bochramasts"/>
+  </patternset>
+  
+  <path id="bochramasts.module.sourcepath">
+    <dirset dir="${module.bochramasts.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.bochramasts" depends="compile.module.bochramasts.production,compile.module.bochramasts.tests" description="Compile module BochramaSTS"/>
+  
+  <target name="compile.module.bochramasts.production" depends="register.custom.compilers" description="Compile module BochramaSTS; production classes">
+    <mkdir dir="${bochramasts.output.dir}"/>
+    <javac2 destdir="${bochramasts.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.bochramasts}/javac">
+      <compilerarg line="${compiler.args.bochramasts}"/>
+      <bootclasspath refid="bochramasts.module.bootclasspath"/>
+      <classpath refid="bochramasts.module.production.classpath"/>
+      <src refid="bochramasts.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.bochramasts"/>
+    </javac2>
+    
+    <copy todir="${bochramasts.output.dir}">
+      <fileset dir="${module.bochramasts.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.bochramasts.tests" depends="register.custom.compilers,compile.module.bochramasts.production" description="compile module BochramaSTS; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.bochramasts" description="cleanup module">
+    <delete dir="${bochramasts.output.dir}"/>
+    <delete dir="${bochramasts.testoutput.dir}"/>
+  </target>
+</project>
